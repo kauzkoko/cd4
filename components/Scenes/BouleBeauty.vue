@@ -1,39 +1,32 @@
 <template>
   <View />
   <template v-for="(sphere, index) in spheres" :key="index">
-    <TresMesh
-      :ref="(el) => (sphereRefs[index] = el)"
-      :position="sphere.position"
-      @click="changeObject(sphereRefs[index])"
-      cast-shadow
-      :scale="sphere.cochonette ? 0.5 : 1"
+    <Levioso
+      :speed="levioso ? 10 : 0"
+      :rotationFactor="levioso ? 0.2 : 0"
+      :floatFactor="levioso ? 0.1 : 0"
+      :range="[levioso ? 0.5 : 0, levioso ? 1.2 : 0]"
     >
-      <TresMeshToonMaterial color="white" />
-      <TresSphereGeometry :args="[1, 24, 24]" />
-
-      <MeshGlassMaterial
-        v-if="transformRef !== sphereRefs[index]"
-        :ref="(el) => (materialRefs[index] = el)"
-        :color="sphere.color"
-      />
-      <Superformula
-        v-if="transformRef === sphereRefs[index]"
-        :num-arms-a="sphere.params.numArmsA"
-        :num-arms-b="sphere.params.numArmsB"
-        :exp-a="sphere.params.expA"
-        cast-shadow
-      >
-        <MeshWobbleMaterial :speed="2" :factor="10" color="black" />
-      </Superformula>
-    </TresMesh>
-    <Suspense>
-      <TinyVideoBox :position="sphere.position" v-if="!sphere.cochonette" />
-    </Suspense> 
+      <TresGroup :position="sphere.position" :ref="(el) => (sphereRefs[index] = el)">
+        <TresMesh @click="changeObject(sphereRefs[index])" cast-shadow :scale="sphere.cochonette ? 0.5 : 1">
+          <TresMeshToonMaterial color="white" />
+          <TresSphereGeometry :args="[1, 24, 24]" />
+          <MeshGlassMaterial :ref="(el) => (materialRefs[index] = el)" :color="sphere.color" />
+        </TresMesh>
+        <Suspense>
+          <TinyVideoBox
+            :animate="transformRef === sphereRefs[index]"
+            :cochonette="sphere.cochonette"
+            :direction="sphere.direction"
+          />
+        </Suspense>
+      </TresGroup>
+    </Levioso>
   </template>
   <TransformControls v-if="transformRef && transforms" :object="transformRef" v-bind="controlsState" />
   <TresGridHelper :args="[100, 100]" v-if="grid" />
   <Suspense>
-    <Background />
+    <BackgroundsCylinder />
   </Suspense>
   <Lights />
 </template>
@@ -46,9 +39,7 @@ const transformRef = ref(null)
 function changeObject(object) {
   transformRef.value = object
 }
-
-
-const { transforms, grid } = storeToRefs(useStore())
+const { transforms, grid, levioso } = storeToRefs(useStore())
 
 const controlsState = reactive({
   mode: 'translate',

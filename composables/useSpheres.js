@@ -1,10 +1,10 @@
 const spheres = [
-	{ position: [3, 1, 0], color: 'green', params: { numArmsA: 40, numArmsB: 40, expA: [40, 30, 10] } },
-	{ position: [-2, 1, 0], color: 'yellow', params: { numArmsA: 4, numArmsB: 8, expA: [30, 20, 10] } },
-	{ position: [0, 1, 4], color: 'green', params: { numArmsA: 5, numArmsB: 10, expA: [20, 40, 10] } },
-	{ position: [0, 1, -5], color: 'yellow', params: { numArmsA: 6, numArmsB: 12, expA: [40, 20, 10] } },
-	{ position: [3, 1, 1], color: 'green', params: { numArmsA: 2, numArmsB: 1, expA: [30, 40, 10] } },
-	{ position: [0, .5, 0], color: 'red', params: { numArmsA: 2, numArmsB: 2, expA: [10, 10, 10] }, cochonette: true },
+	{ position: [1, 1.1, 0], color: 'green', params: { numArmsA: 40, numArmsB: 40, expA: [40, 30, 10] }, direction: 0.5 },
+	{ position: [-2, 1.1, 0], color: 'yellow', params: { numArmsA: 4, numArmsB: 8, expA: [30, 20, 10] }, direction: 0.5 },
+	{ position: [0, 1.1, 4], color: 'green', params: { numArmsA: 5, numArmsB: 10, expA: [20, 40, 10] }, direction: 0.5 },
+	{ position: [0, 1.1, -5], color: 'yellow', params: { numArmsA: 6, numArmsB: 12, expA: [40, 20, 10] }, direction: 0.5 },
+	{ position: [3, 1.1, 1], color: 'green', params: { numArmsA: 2, numArmsB: 1, expA: [30, 40, 10] }, direction: 0.5 },
+	{ position: [0, .5, 0], color: 'red', params: { numArmsA: 2, numArmsB: 2, expA: [10, 10, 10] }, cochonette: true, direction: 0.5 },
 ]
 
 export const useSpheres = () => {
@@ -32,7 +32,7 @@ const generateRandomPositions = () => {
       // Generate random position with larger area
       let x = sphere.cochonette ? 0 : Math.random() * gridSize - (gridSize/2)
       let z = sphere.cochonette ? 0 : Math.random() * gridSize - (gridSize/2)
-      const y = sphere.cochonette ? 0.5 : 1
+      const y = sphere.cochonette ? 0.5 : 1.1
 
       // If not cochonette, ensure sphere is outside the central area
       if (!sphere.cochonette) {
@@ -68,7 +68,8 @@ const generateRandomPositions = () => {
     placedSpheres.push(position)
     return {
       ...sphere,
-      position
+      position,
+      direction: Math.random()
     }
   })
 }
