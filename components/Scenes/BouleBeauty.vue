@@ -8,7 +8,7 @@
       :range="[levioso ? 0.5 : 0, levioso ? 1.2 : 0]"
     >
       <TresGroup :position="sphere.position" :ref="(el) => (sphereRefs[index] = el)">
-        <TresMesh @click="changeObject(sphereRefs[index])" cast-shadow :scale="sphere.cochonette ? 0.5 : 1">
+        <TresMesh @click="changeObject(sphereRefs[index], index)" cast-shadow :scale="sphere.cochonette ? 0.5 : 1">
           <TresMeshToonMaterial color="white" />
           <TresSphereGeometry :args="[1, 24, 24]" />
           <MeshGlassMaterial :ref="(el) => (materialRefs[index] = el)" :color="sphere.color" />
@@ -28,6 +28,18 @@
   <Suspense>
     <BackgroundsCylinder />
   </Suspense>
+    <Box :args="[1, 1, 1]" :position="selectedSpherePosition">
+      <TresMeshToonMaterial color="white" :opacity="0" transparent />
+      <Suspense>
+        <PositionalAudio
+          ref="positionalAudioRef"
+          :ready="true"
+          loop
+          helper
+          url="/shortdeep.mp3"
+        />
+      </Suspense>
+    </Box>
   <Lights />
 </template>
 
@@ -36,10 +48,31 @@ const { spheres } = useSpheres()
 const sphereRefs = ref(Array(spheres.length).fill(null))
 const materialRefs = ref(Array(spheres.length).fill(null))
 const transformRef = ref(null)
-function changeObject(object) {
+
+const selectedSpherePosition = ref([0, 0, 0])
+function changeObject(object, index ) {
   transformRef.value = object
+  selectedSpherePosition.value = spheres.value[index].position
 }
-const { transforms, grid, levioso } = storeToRefs(useStore())
+const { transforms, grid, levioso, audio } = storeToRefs(useStore())
+
+
+const audioFiles = [
+  '/shortdeep.mp3',
+  '/shortdeep.mp3',    // Replace with your actual audio file
+  '/shortdeep.mp3'     // Replace with your actual audio file
+];
+
+const positionalAudioRef = shallowRef(null)
+watchStoreRef("audio", (value) => {
+  if (value) {
+    positionalAudioRef.value.play()
+  } else {
+    positionalAudioRef.value.pause()
+  }
+})
+
+
 
 const controlsState = reactive({
   mode: 'translate',

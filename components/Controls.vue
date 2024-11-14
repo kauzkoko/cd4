@@ -40,6 +40,11 @@
          @click="toggleRandomSpheres()">
       R
     </div>
+    <div class="circle grain1 flexCenter no-select active:animate-ping" 
+         v-tooltip="'Audio'" 
+         @click="toggleAudio()">
+      A
+    </div>
   </div>
 </template>
 
@@ -53,6 +58,7 @@ const {
   toggleLevioso,
   toggleCameraControls,
   toggleRandomSpheres,
+  toggleAudio,
 } = useStore()
 
 // Add keyboard controls for each toggle
@@ -97,6 +103,11 @@ onKeyStroke(['c', 'C'], (e) => {
 onKeyStroke(['r', 'R'], (e) => {
   // e.preventDefault()
   toggleRandomSpheres()
+})
+
+onKeyStroke(['x', 'X'], (e) => {
+  e.preventDefault()
+  toggleAudio()
 })
 </script>
 

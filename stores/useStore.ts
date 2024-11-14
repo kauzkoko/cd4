@@ -7,7 +7,7 @@ export const useStore = defineStore(
     const [sky, toggleSky] = useToggle(false)
     const [backdrop, toggleBackdrop] = useToggle(false)
     const [cameraControls, toggleCameraControls] = useToggle(true)
-
+    const [audio, toggleAudio] = useToggle(false)
     const animateCounter = ref(0)
     const animate = () => {
       animateCounter.value++
@@ -35,7 +35,9 @@ export const useStore = defineStore(
       cameraControls,
       toggleCameraControls,
       randomSpheresCounter,
-      toggleRandomSpheres
+      toggleRandomSpheres,
+      audio,
+      toggleAudio
     };
   },
   {
