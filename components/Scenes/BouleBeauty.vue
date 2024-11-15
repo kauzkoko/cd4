@@ -1,5 +1,5 @@
 <template>
-  <View />
+  <ViewsBoule />
   <template v-for="(sphere, index) in spheres" :key="index">
     <Levioso
       :speed="levioso ? 10 : 0"
@@ -42,7 +42,7 @@
         />
       </Suspense>
     </Box>
-  <Lights />
+  <LightsBasic />
 </template>
 
 <script setup>
@@ -50,6 +50,10 @@ const { spheres } = useSpheres()
 const sphereRefs = ref(Array(spheres.length).fill(null))
 const materialRefs = ref(Array(spheres.length).fill(null))
 const transformRef = ref(null)
+
+const tresCanvas = useTresContext().renderer.value.domElement
+const h = useHydra(tresCanvas)
+h.src(s0).pixelate(200,100).out()
 
 const selectedSpherePosition = ref([0, 0, 0])
 function changeObject(object, index ) {

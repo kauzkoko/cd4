@@ -1,5 +1,5 @@
 <template>
-  <View />
+  <ViewsBoule />
   <template v-for="(sphere, index) in spheres" :key="index">
     <Levioso
       :speed="levioso ? 10 : 0"
@@ -42,7 +42,7 @@
         />
       </Suspense>
     </Box>
-  <Lights />
+  <LightsBasic />
 </template>
 
 <script setup>

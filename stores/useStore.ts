@@ -26,6 +26,8 @@ export const useStore = defineStore(
       console.log(audioSrc.value)
     }
 
+    const { isFullscreen, enter, exit, toggle: toggleFullscreen } = useFullscreen()
+
     const randomSpheresCounter = ref(0)
     const toggleRandomSpheres = () => {
       randomSpheresCounter.value++
@@ -52,7 +54,9 @@ export const useStore = defineStore(
       audio,
       toggleAudio,
       audioSrc,
-      switchAudioSrc
+      switchAudioSrc,
+      isFullscreen,
+      toggleFullscreen
     };
   },
   {

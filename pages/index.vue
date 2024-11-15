@@ -6,7 +6,7 @@ const routes = router.getRoutes();
 
 <template>
   <div class="fullScreen flexCenter flex-col">
-    <h1 class="text-6xl font-clash-display grain mb-0">Home</h1>
+    <h1 class="text-6xl font-clash-display grain mb-0">Paratanque</h1>
     <div class="bg-hex-ffff00 inline-block">
       <ul>
         <li class="grain w-full h-20px"></li>

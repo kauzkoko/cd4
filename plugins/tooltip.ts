@@ -18,7 +18,7 @@ export default defineNuxtPlugin(nuxtApp => {
           top: 50px;
           transform: translateX(-50%) rotate(-25deg);
           background-color: rgba(0, 0, 0, 0.8);
-          color: linear-gradient(to right, #000000, #ffffff);
+          color: white;
           font-size: 0.875rem;
           padding: 0.25rem 0.5rem;
           white-space: nowrap;

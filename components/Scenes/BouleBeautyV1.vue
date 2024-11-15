@@ -1,5 +1,5 @@
 <template>
-  <View />
+  <ViewsBoule />
   <template v-for="(sphere, index) in spheres" :key="index">
     <TresMesh
       :ref="(el) => (sphereRefs[index] = el)"
@@ -35,7 +35,7 @@
   <Suspense>
     <BackgroundsGrain />
   </Suspense>
-  <Lights />
+  <LightsBasic />
 </template>
 
 <script setup>

@@ -1,5 +1,5 @@
 <template>
-  <View />
+  <ViewsBoule />
   <template v-for="(sphere, index) in spheres" :key="index">
     <Levioso 
       :speed="levioso ? 1 : 0"
@@ -28,8 +28,8 @@
     :object="transformRef"
     v-bind="controlsState"
   />
-  <Background />
-  <Lights />
+  <BackgroundsGrain />
+  <LightsBasic />
 </template>
 
 <script setup>
