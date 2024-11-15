@@ -7,10 +7,11 @@
       :floatFactor="levioso ? 0.1 : 0"
       :range="[levioso ? 0.5 : 0, levioso ? 1.2 : 0]"
     >
-      <TresGroup :position="sphere.position" :ref="(el) => (sphereRefs[index] = el)">
+      <TresGroup :position="transformRef === sphereRefs[index] ? [sphere.position[0], sphere.position[1]-.6, sphere.position[2]] : sphere.position" :ref="(el) => (sphereRefs[index] = el)">
         <TresMesh @click="changeObject(sphereRefs[index], index)" cast-shadow :scale="sphere.cochonette ? 0.5 : 1">
           <TresMeshToonMaterial color="white" />
           <TresSphereGeometry :args="[1, 24, 24]" />
+          <!-- <Sparkles /> -->
           <MeshGlassMaterial :ref="(el) => (materialRefs[index] = el)" :color="sphere.color" />
         </TresMesh>
         <Suspense>
@@ -28,7 +29,7 @@
   <Suspense>
     <BackgroundsCylinder />
   </Suspense>
-    <Box :args="[1, 1, 1]" :position="selectedSpherePosition">
+    <Box :args="[1, 1, 1]" :position="[selectedSpherePosition[0], -.1, selectedSpherePosition[2]]">
       <TresMeshToonMaterial color="white" :opacity="0" transparent />
       <Suspense>
         <PositionalAudio
@@ -36,7 +37,8 @@
           :ready="true"
           loop
           helper
-          url="/shortdeep.mp3"
+          :key="audioSrc"
+          :url="audioSrc"
         />
       </Suspense>
     </Box>
@@ -54,14 +56,7 @@ function changeObject(object, index ) {
   transformRef.value = object
   selectedSpherePosition.value = spheres.value[index].position
 }
-const { transforms, grid, levioso, audio } = storeToRefs(useStore())
-
-
-const audioFiles = [
-  '/shortdeep.mp3',
-  '/shortdeep.mp3',    // Replace with your actual audio file
-  '/shortdeep.mp3'     // Replace with your actual audio file
-];
+const { transforms, grid, levioso, audioSrc } = storeToRefs(useStore())
 
 const positionalAudioRef = shallowRef(null)
 watchStoreRef("audio", (value) => {

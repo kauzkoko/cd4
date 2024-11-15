@@ -12,6 +12,19 @@ export const useStore = defineStore(
     const animate = () => {
       animateCounter.value++
     }
+    const audioFiles = [
+      '/shortdeep.mp3',
+      '/waterBig.m4a',    
+      '/waterBigger.m4a',
+      '/waterMedium.m4a'
+    ]
+    const audioSrc = ref(audioFiles[0])
+    let audioIndex = 0
+    const switchAudioSrc = () => {
+      audioIndex = (audioIndex + 1) % audioFiles.length
+      audioSrc.value = audioFiles[audioIndex]
+      console.log(audioSrc.value)
+    }
 
     const randomSpheresCounter = ref(0)
     const toggleRandomSpheres = () => {
@@ -37,13 +50,15 @@ export const useStore = defineStore(
       randomSpheresCounter,
       toggleRandomSpheres,
       audio,
-      toggleAudio
+      toggleAudio,
+      audioSrc,
+      switchAudioSrc
     };
   },
   {
     persist: [
       {
-        pick: ['transforms', 'grid', 'sky', 'backdrop', 'levioso', 'cameraControls', 'randomSpheresCounter'],
+        pick: ['transforms', 'grid', 'sky', 'backdrop', 'levioso', 'cameraControls', 'randomSpheresCounter', 'audioSrc'],
       },
     ],
   }

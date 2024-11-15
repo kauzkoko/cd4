@@ -28,6 +28,16 @@ $color-pairs: (
   (rgba(255, 165, 0, 1), rgba(0, 0, 0, 0)),   // orange -> transparent
   (rgba(75, 0, 130, 1), rgba(0, 0, 0, 0)),    // indigo -> transparent
   (rgba(0, 128, 128, 1), rgba(0, 0, 0, 0))    // teal -> transparent
+  , (rgba(255, 255, 0, 1), rgba(0, 0, 0, 0)),    // yellow -> transparent
+  (rgba(255, 0, 255, 1), rgba(0, 0, 0, 0)),      // magenta -> transparent
+  (rgba(128, 128, 0, 1), rgba(0, 0, 0, 0)),      // olive -> transparent
+  (rgba(128, 0, 0, 1), rgba(0, 0, 0, 0)),        // maroon -> transparent
+  (rgba(0, 128, 0, 1), rgba(0, 0, 0, 0)),        // green -> transparent
+  (rgba(128, 128, 128, 1), rgba(0, 0, 0, 0)),    // gray -> transparent
+  (rgba(0, 0, 128, 1), rgba(0, 0, 0, 0)),        // navy -> transparent
+  (rgba(255, 140, 0, 1), rgba(0, 0, 0, 0)),      // dark orange -> transparent
+  (rgba(218, 112, 214, 1), rgba(0, 0, 0, 0)),    // orchid -> transparent
+  (rgba(70, 130, 180, 1), rgba(0, 0, 0, 0))      // steel blue -> transparent
 );
 
 @for $i from 1 through length($color-pairs) {

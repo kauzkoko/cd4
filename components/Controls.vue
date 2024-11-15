@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed z-50 top-5 right-5 flex flex-row gap-2">
+  <div class="fixed z-50 top-5 right-5 flex flex-wrap gap-2 flex-col md:flex-row">
     <div class="circle grain2 flexCenter no-select active:animate-ping" 
          v-tooltip="'Transform'" 
          @click="toggleTransforms()">
@@ -45,6 +45,11 @@
          @click="toggleAudio()">
       A
     </div>
+    <div class="circle grain10 flexCenter no-select active:animate-ping" 
+         v-tooltip="'Switch Audio'" 
+         @click="switchAudioSrc()">
+      S
+    </div>
   </div>
 </template>
 
@@ -59,6 +64,7 @@ const {
   toggleCameraControls,
   toggleRandomSpheres,
   toggleAudio,
+  switchAudioSrc
 } = useStore()
 
 // Add keyboard controls for each toggle
@@ -108,6 +114,11 @@ onKeyStroke(['r', 'R'], (e) => {
 onKeyStroke(['x', 'X'], (e) => {
   e.preventDefault()
   toggleAudio()
+})
+
+onKeyStroke(['y', 'y'], (e) => {
+  e.preventDefault()
+  switchAudioSrc()
 })
 </script>
 

@@ -21,7 +21,6 @@ export default defineNuxtPlugin(nuxtApp => {
           color: linear-gradient(to right, #000000, #ffffff);
           font-size: 0.875rem;
           padding: 0.25rem 0.5rem;
-          border-radius: 0.25rem;
           white-space: nowrap;
           opacity: 0;
           pointer-events: none;
