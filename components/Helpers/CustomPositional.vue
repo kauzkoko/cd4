@@ -25,6 +25,7 @@ watch([audio, audioSrc], (value) => {
 
 watchEffect(() => {
   if (positionalAudioRef.value) {
+    console.log(positionalAudioRef.value.root)
     positionalAudioRef.value.root.visible = false
   }
 })
