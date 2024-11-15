@@ -1,0 +1,133 @@
+<template>
+  <View />
+  <template v-for="(sphere, index) in spheres" :key="index">
+    <Levioso
+      :speed="levioso ? 10 : 0"
+      :rotationFactor="levioso ? 0.2 : 0"
+      :floatFactor="levioso ? 0.1 : 0"
+      :range="[levioso ? 0.5 : 0, levioso ? 1.2 : 0]"
+    >
+      <TresGroup :position="transformRef === sphereRefs[index] ? [sphere.position[0], sphere.position[1]-.6, sphere.position[2]] : sphere.position" :ref="(el) => (sphereRefs[index] = el)">
+        <TresMesh @click="changeObject(sphereRefs[index], index)" cast-shadow :scale="sphere.cochonette ? 0.5 : 1">
+          <TresMeshToonMaterial color="white" />
+          <TresSphereGeometry :args="[1, 24, 24]" />
+          <!-- <Sparkles /> -->
+          <MeshGlassMaterial :ref="(el) => (materialRefs[index] = el)" :color="sphere.color" />
+        </TresMesh>
+        <Suspense>
+          <TinyVideoBox
+            :animate="transformRef === sphereRefs[index]"
+            :cochonette="sphere.cochonette"
+            :direction="sphere.direction"
+          />
+        </Suspense>
+      </TresGroup>
+    </Levioso>
+  </template>
+  <TransformControls v-if="transformRef && transforms" :object="transformRef" v-bind="controlsState" />
+  <TresGridHelper :args="[100, 100]" v-if="grid" />
+  <Suspense>
+    <BackgroundsCylinder />
+  </Suspense>
+    <Box :args="[1, 1, 1]" :position="[selectedSpherePosition[0], -.1, selectedSpherePosition[2]]">
+      <TresMeshToonMaterial color="white" :opacity="0" transparent />
+      <Suspense>
+        <PositionalAudio
+          ref="positionalAudioRef"
+          :ready="true"
+          loop
+          helper
+          :key="audioSrc"
+          :url="audioSrc"
+        />
+      </Suspense>
+    </Box>
+  <Lights />
+</template>
+
+<script setup>
+import Hydra from 'hydra-synth'
+const { spheres } = useSpheres()
+const sphereRefs = ref(Array(spheres.length).fill(null))
+const materialRefs = ref(Array(spheres.length).fill(null))
+const transformRef = ref(null)
+
+const { renderer } = useTresContext()
+const hydraCanvas = ref(null)
+const hydraInstance = ref(null)
+
+onMounted(() => {
+  if (renderer.value) {
+    hydraCanvas.value = document.createElement('canvas')
+    hydraCanvas.value.style.position = 'fixed'
+    hydraCanvas.value.style.top = '0'
+    hydraCanvas.value.style.left = '0'
+    hydraCanvas.value.style.width = '100vw'
+    hydraCanvas.value.style.height = '100vh'
+    hydraCanvas.value.style.pointerEvents = 'none'
+    hydraCanvas.value.style.zIndex = '1'
+    hydraCanvas.value.style.opacity = '0.8'
+    document.body.appendChild(hydraCanvas.value)
+
+    hydraInstance.value = new Hydra({ 
+      makeGlobal: true,
+      detectAudio: false,
+      canvas: hydraCanvas.value,
+    }).synth
+
+    const tempCanvas = document.createElement('canvas')
+    tempCanvas.width = window.innerWidth*4
+    tempCanvas.height = window.innerHeight*4
+    const tempCtx = tempCanvas.getContext('2d')
+    // Setup animation loop
+    const animate = () => {
+      tempCtx.drawImage(renderer.value.domElement, 0, 0)
+      hydraInstance.value.s0.init({ src: tempCanvas })
+      hydraInstance.value.src(hydraInstance.value.s0)
+      // s0.initCam()
+      src(s0).invert().out(o0)
+
+      requestAnimationFrame(animate)
+    }
+
+    animate()
+  }
+})
+
+// Clean up on component unmount
+onUnmounted(() => {
+  if (hydraInstance.value) {
+    hydraInstance.value.close()
+  }
+  // Remove the canvas element
+  if (hydraCanvas.value && hydraCanvas.value.parentNode) {
+    hydraCanvas.value.parentNode.removeChild(hydraCanvas.value)
+  }
+})
+
+const selectedSpherePosition = ref([0, 0, 0])
+function changeObject(object, index ) {
+  transformRef.value = object
+  selectedSpherePosition.value = spheres.value[index].position
+}
+const { transforms, grid, levioso, audioSrc } = storeToRefs(useStore())
+
+const positionalAudioRef = shallowRef(null)
+watchStoreRef("audio", (value) => {
+  if (value) {
+    positionalAudioRef.value.play()
+  } else {
+    positionalAudioRef.value.pause()
+  }
+})
+
+
+
+const controlsState = reactive({
+  mode: 'translate',
+  enabled: true,
+  showX: true,
+  showY: false,
+  showZ: true,
+})
+</script>

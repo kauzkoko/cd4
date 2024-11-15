@@ -28,4 +28,9 @@ export default defineNuxtConfig({
   fonts: {
     priority: ['fontshare', 'bunny'],
   },
+  vite: {
+    define: {
+      "window.global": {},
+    },
+  },
 })
