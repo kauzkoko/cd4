@@ -51,10 +51,6 @@ const sphereRefs = ref(Array(spheres.length).fill(null))
 const materialRefs = ref(Array(spheres.length).fill(null))
 const transformRef = ref(null)
 
-const tresCanvas = useTresContext().renderer.value.domElement
-const h = useHydra(tresCanvas)
-h.src(s0).pixelate(200,100).out()
-
 const selectedSpherePosition = ref([0, 0, 0])
 function changeObject(object, index ) {
   transformRef.value = object

@@ -46,64 +46,14 @@
 </template>
 
 <script setup>
-import Hydra from 'hydra-synth'
 const { spheres } = useSpheres()
 const sphereRefs = ref(Array(spheres.length).fill(null))
 const materialRefs = ref(Array(spheres.length).fill(null))
 const transformRef = ref(null)
 
-const { renderer } = useTresContext()
-const hydraCanvas = ref(null)
-const hydraInstance = ref(null)
-
-onMounted(() => {
-  if (renderer.value) {
-    hydraCanvas.value = document.createElement('canvas')
-    hydraCanvas.value.style.position = 'fixed'
-    hydraCanvas.value.style.top = '0'
-    hydraCanvas.value.style.left = '0'
-    hydraCanvas.value.style.width = '100vw'
-    hydraCanvas.value.style.height = '100vh'
-    hydraCanvas.value.style.pointerEvents = 'none'
-    hydraCanvas.value.style.zIndex = '1'
-    hydraCanvas.value.style.opacity = '0.8'
-    document.body.appendChild(hydraCanvas.value)
-
-    hydraInstance.value = new Hydra({ 
-      makeGlobal: true,
-      detectAudio: false,
-      canvas: hydraCanvas.value,
-    }).synth
-
-    const tempCanvas = document.createElement('canvas')
-    tempCanvas.width = window.innerWidth*4
-    tempCanvas.height = window.innerHeight*4
-    const tempCtx = tempCanvas.getContext('2d')
-    // Setup animation loop
-    const animate = () => {
-      tempCtx.drawImage(renderer.value.domElement, 0, 0)
-      hydraInstance.value.s0.init({ src: tempCanvas })
-      hydraInstance.value.src(hydraInstance.value.s0)
-      // s0.initCam()
-      src(s0).invert().out(o0)
-
-      requestAnimationFrame(animate)
-    }
-
-    animate()
-  }
-})
-
-// Clean up on component unmount
-onUnmounted(() => {
-  if (hydraInstance.value) {
-    hydraInstance.value.close()
-  }
-  // Remove the canvas element
-  if (hydraCanvas.value && hydraCanvas.value.parentNode) {
-    hydraCanvas.value.parentNode.removeChild(hydraCanvas.value)
-  }
-})
+const tresCanvas = useTresContext().renderer.value.domElement
+const h = useHydra(tresCanvas)
+h.src(s0).pixelate(200,100).out()
 
 const selectedSpherePosition = ref([0, 0, 0])
 function changeObject(object, index ) {
