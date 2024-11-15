@@ -2,9 +2,9 @@
   <ViewsBasic />
   <TresMesh>
     <TresBoxGeometry :args="[1, 1, 1]" />
-    <TresMeshStandardMaterial color="white" />
+    <TresMeshStandardMaterial color="black" />
     <Suspense>
-      <CustomPos />
+      <HelpersCustomPositional />
     </Suspense>
   </TresMesh>
   <LightsBasic />

@@ -1,15 +1,14 @@
 <template>
-      <PositionalAudio
-        ref="positionalAudioRef"
-        :ready="true"
-        loop
-        helper
-        :autoplay="false"
-        :key="trigger"
-        :url="audioSrc"
-      />
+  <PositionalAudio
+    ref="positionalAudioRef"
+    :ready="true"
+    loop
+    helper
+    :autoplay="false"
+    :key="trigger"
+    :url="audioSrc"
+  />
 </template>
-
 
 <script setup>
 const positionalAudioRef = shallowRef(null)
@@ -29,4 +28,14 @@ watchEffect(() => {
     positionalAudioRef.value.root.visible = false
   }
 })
+
+const slidersStore = useSlidersStore()
+watch(
+  () => slidersStore.sliders.find(s => s.name === 'gain')?.value,
+  (value) => {
+    if (positionalAudioRef.value && value !== undefined) {
+      positionalAudioRef.value.root.gain.gain.value = value
+    }
+  }
+)
 </script>
