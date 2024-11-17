@@ -23,9 +23,7 @@
 <script setup>
 import { MathUtils } from 'three'
 import { useSquare, usePointOnPrimitive } from 'vuexyz'
-import { animate, eases } from '~/assets/anime/anime.esm.min.js';
-const { linear, outExpo, cubicBezier } = eases;
-
+import gsap from 'gsap'
 
 const gl = {
   clearColor: "white",
@@ -38,13 +36,12 @@ const cameraRef = ref(null)
 watchEffect(() => {
   if (cameraRef.value) {
     let rotation = cameraRef.value.rotation;
-    animate(rotation, {
+    gsap.to(rotation, {
       y: Math.PI * 2,
-      duration: 3000,
-      loop: true,
-      alternate: true,
-      reverse: true,
-    }) 
+      duration: 10,
+      repeat: -1,
+      ease: "none"
+    })
   }
 })
 

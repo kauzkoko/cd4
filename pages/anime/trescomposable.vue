@@ -20,7 +20,7 @@ const gl = {
 };
 
 const cubeRef = shallowRef(null);
-const animation = useAnimate(cubeRef, { x: 1, });
+const animation = useAnimate(cubeRef, { type: 'position', x: 1, });
 
 // start immediately
 // whenever(animation, (value) => {

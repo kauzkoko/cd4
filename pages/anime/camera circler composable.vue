@@ -23,8 +23,7 @@
 <script setup>
 import { MathUtils } from 'three'
 import { useSquare, usePointOnPrimitive } from 'vuexyz'
-import { animate, eases } from '~/assets/anime/anime.esm.min.js';
-const { linear, outExpo, cubicBezier } = eases;
+import { animate } from '~/assets/anime/anime.esm.min.js';
 
 
 const gl = {
@@ -35,21 +34,21 @@ const gl = {
 };
 
 const cameraRef = ref(null)
-watchEffect(() => {
-  if (cameraRef.value) {
-    let rotation = cameraRef.value.rotation;
-    animate(rotation, {
-      y: Math.PI * 2,
-      duration: 3000,
-      loop: true,
-      alternate: true,
-      reverse: true,
-    }) 
-  }
-})
+// watchEffect(() => {
+//   if (cameraRef.value) {
+//     let rotation = cameraRef.value.rotation;
+//     animate(rotation, {
+//       y: MathUtils.degToRad(360),
+//       duration: 20000,
+//       loop: true,
+//     })
+//   }
+// })
+
+const animation = useAnimate(cameraRef, { type: 'rotation', autoplay: true, y: MathUtils.degToRad(360), duration: 10000, loop: true });
 
 const cubeRef = shallowRef(null);
 const square = useSquare({sideLength: 10})
 const { point } = usePointOnPrimitive(square, 0.4)
-const animation = useAnimate(cubeRef, { x: point.value.x, z: point.value.y, autoplay: true });
+// const animation = useAnimate(cubeRef, { x: point.value.x, z: point.value.y, autoplay: true });
 </script>

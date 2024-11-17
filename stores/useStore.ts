@@ -36,6 +36,8 @@ export const useStore = defineStore(
       randomSpheresCounter.value++
     }
 
+    const selectedSpherePosition = ref({ x: 0, y: 0, z: 0 })
+
 
     return {
       transforms,
@@ -59,13 +61,14 @@ export const useStore = defineStore(
       audioSrc,
       switchAudioSrc,
       isFullscreen,
-      toggleFullscreen
+      toggleFullscreen,
+      selectedSpherePosition,
     };
   },
   {
     persist: [
       {
-        pick: ['transforms', 'grid', 'sky', 'backdrop', 'levioso', 'cameraControls', 'randomSpheresCounter', 'audioSrc'],
+        pick: ['transforms', 'grid', 'sky', 'backdrop', 'levioso', 'cameraControls', 'randomSpheresCounter', 'audioSrc', 'selectedSpherePosition'],
       },
     ],
   }

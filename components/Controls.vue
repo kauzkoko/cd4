@@ -133,4 +133,6 @@ onKeyStroke(['f', 'F'], (e) => {
   e.preventDefault()
   toggleFullscreen()
 })
+
+
 </script>

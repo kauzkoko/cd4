@@ -5,19 +5,38 @@ export const useHydra = (tresCanvas) => {
     canvas.classList.add('fixed', 'top-0', 'left-0', 'fullScreen', 'pointer-events-none')
     document.body.appendChild(canvas)
     
-    const h = new Hydra({ 
+    const { isFullscreen } = storeToRefs(useStore())
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    
+    let h = new Hydra({ 
         global: false, 
         detectAudio: false, 
-        canvas: canvas 
+        canvas: canvas,
+        width: window.innerWidth,
+        height: window.innerHeight
     }).synth
-    h.setResolution(window.innerWidth, window.innerHeight)
-    h.s0.init({src: tresCanvas })
     
-    h.src(s0).kaleid().out()
-    osc(10, 0.1, 1.2).blend(noise(3)).diff(s0).out()
-    h.src(s0).blend(noise(3)).out()
-    h.src(s0).modulate(shape(32), .3).out()
-    h.src(s0).pixelate(40,40).out()
+    h.s0.init({ src: tresCanvas })
+
+    watch([isFullscreen], () => {
+        h = new Hydra({ 
+            global: false, 
+            detectAudio: false, 
+            canvas: canvas,
+            width: window.width,
+            height: window.height
+        }).synth
+
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
+        h.setResolution(window.width, window.height)
+        h.s0.init({ src: tresCanvas })
+        h.src(s0).pixelate(200, 100).out()
+    })
+    
+    h.src(s0).pixelate(200, 100).out()
+
 
     return h
 }
