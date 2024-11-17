@@ -13,6 +13,9 @@ export const useStore = defineStore(
       animateCounter.value++
     }
     const audioFiles = [
+      '/strudel/c3major.mp3',
+      '/strudel/e3major.mp3',
+      '/strudel/g3major.mp3',
       '/shortdeep.mp3',
       '/waterBig.m4a',    
       '/waterBigger.m4a',

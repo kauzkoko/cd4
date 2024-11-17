@@ -1,5 +1,5 @@
 <template>
-  <ViewsBasic />
+  <ViewsAutoRotate />
   <TresMesh>
     <TresBoxGeometry :args="[1, 1, 1]" />
     <TresMeshStandardMaterial color="black" />
