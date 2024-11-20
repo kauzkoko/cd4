@@ -7,7 +7,7 @@ const spheres = [
 	{ position: [0, .5, 0], color: 'red', params: { numArmsA: 2, numArmsB: 2, expA: [10, 10, 10] }, cochonette: true, direction: 0.5, sound: '/strudel/e3major.mp3' },
 ]
 
-export const useSpheres = () => {
+export const useSpheresSounds = () => {
   const randomSpheres = ref(generateRandomPositions())
   watchStoreRef("randomSpheresCounter", (value) => {
     randomSpheres.value = generateRandomPositions()
