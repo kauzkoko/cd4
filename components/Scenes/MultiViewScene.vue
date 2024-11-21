@@ -1,3 +1,41 @@
+<template>
+  <!-- Add two cameras with different positions -->
+  <TresPerspectiveCamera
+    ref="camera1"
+    :look-at="[0, 0, 0]"
+  />
+  <TresPerspectiveCamera
+    ref="camera2"
+    :look-at="[0, 0, 0]"
+  />
+  
+  <!-- Original scene content -->
+  <TresMesh
+    ref="cube"
+    :position="[0, 0, 0]"
+  >
+    <TresBoxGeometry :args="[1, 1, 1]" />
+    <TresMeshStandardMaterial color="blue" />
+    <PositionalAudio
+      ref="positionalAudioRef"
+      :ready="true"
+      loop
+      helper
+      :autoplay="false"
+      :key="trigger"
+      url="/shortdeep.mp3"
+  />
+  </TresMesh>
+  
+  <TresAmbientLight :intensity="1" />
+  <TresSpotLight
+    :intensity="100"
+    :position="[0, 0, 5]"
+  />
+  <TresDirectionalLight :intensity="5" />
+  <TresHemisphereLight />
+</template> 
+
 <script setup>
 import gsap from 'gsap'
 import * as THREE from 'three'
@@ -9,6 +47,22 @@ const tresCanvas = useTresContext().renderer.value
 // Create two cameras
 const camera1 = ref()
 const camera2 = ref()
+
+const positionalAudioRef = ref()
+const trigger = ref(0)
+watch(trigger, (newVal) => {
+  console.log('trigger', newVal)
+  positionalAudioRef.value.play()
+})
+// Handle keyboard events
+onMounted(() => {
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 't') {
+      trigger.value++
+    }
+  })
+})
+
 
 // Setup viewport sizes and cameras when component mounts
 onMounted(() => {
@@ -54,32 +108,3 @@ watch(cube, (newVal) => {
   }
 })
 </script>
-
-<template>
-  <!-- Add two cameras with different positions -->
-  <TresPerspectiveCamera
-    ref="camera1"
-    :look-at="[0, 0, 0]"
-  />
-  <TresPerspectiveCamera
-    ref="camera2"
-    :look-at="[0, 0, 0]"
-  />
-  
-  <!-- Original scene content -->
-  <TresMesh 
-    ref="cube"
-    :position="[0, 0, 0]"
-  >
-    <TresBoxGeometry :args="[1, 1, 1]" />
-    <TresMeshStandardMaterial color="blue" />
-  </TresMesh>
-  
-  <TresAmbientLight :intensity="1" />
-  <TresSpotLight
-    :intensity="100"
-    :position="[0, 0, 5]"
-  />
-  <TresDirectionalLight :intensity="5" />
-  <TresHemisphereLight />
-</template> 
