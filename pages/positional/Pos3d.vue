@@ -1,7 +1,7 @@
 <template>
   <TresCanvas v-bind="gl">
-    <TresMesh @click="$refs.pos3d.start()">
-      <TresBoxGeometry :args="[1, 1, 1]" position="[3, 0, 0]" />
+    <TresMesh @click="$refs.pos3d.start()":position="[0,0,0]">
+      <TresBoxGeometry :args="[1, 1, 1]" />
       <TresMeshStandardMaterial color="#4488ff" />
       <Suspense>
         <HelpersPos3d ref="pos3d" url="/shortdeep.mp3" :gain="gain" />
@@ -15,11 +15,11 @@
 
 <script setup>
 const gl = {
-  clearColor: "white",
+  clearColor: 'white',
   shadows: true,
   alpha: true,
   windowSize: true,
-};
+}
 
 const gain = ref(0.5)
 </script>
