@@ -2,7 +2,9 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ['@tresjs/nuxt', '@unocss/nuxt', '@vueuse/nuxt', '@nuxt/fonts', '@pinia/nuxt', 'pinia-plugin-persistedstate'],
+  modules: ['@tresjs/nuxt', '@unocss/nuxt', '@vueuse/nuxt', 
+    // '@nuxt/fonts',
+     '@pinia/nuxt', 'pinia-plugin-persistedstate'],
   ssr: false,
   unocss: {
     attributify: true,
@@ -25,9 +27,10 @@ export default defineNuxtConfig({
       })],
     ],
   },
-  fonts: {
-    priority: ['fontshare', 'bunny'],
-  },
+  // fonts: {
+  //   priority: ['fontshare', 'bunny', 'local'
+  //   ],
+  // },
   vite: {
     define: {
       "window.global": {},
@@ -35,5 +38,6 @@ export default defineNuxtConfig({
   },
   devServer: {
     port: 4444,
+    // https: true
   },
 })

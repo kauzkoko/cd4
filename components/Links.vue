@@ -15,7 +15,7 @@ const isExpanded = ref(false)
       <ul>
         <li class="grain w-full h-20px"></li>
         <template v-for="route in routes" :key="route.path">
-          <NuxtLink :to="route.path">
+          <NuxtLink noPrefetch :to="route.path">
             <li>
               {{ route.path.replaceAll("%20", " ") }}
             </li>
