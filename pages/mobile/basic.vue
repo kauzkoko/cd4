@@ -1,20 +1,19 @@
+<script setup lang="ts">
+const { accelerationIncludingGravity } = useDeviceMotion()
+
+const test = ref(0)
+// watchEffect(() => {
+//     console.log(accelerationIncludingGravity.value)
+//     test.value = accelerationIncludingGravity.value.x?.toFixed(2)
+// })
+
+setInterval(() => {
+    test.value = accelerationIncludingGravity.value.x?.toFixed(3)
+}, 1000)
+</script>
+
 <template>
     <div>
-        <h1>Acceleration: {{ acceleration.y?.toFixed(3) * 100 }}</h1>
+        {{ test }}
     </div>
 </template>
-
-<script setup lang="ts">
-const {
-  acceleration,
-  accelerationIncludingGravity,
-  rotationRate,
-  interval,
-} = useDeviceMotion()
-console.log(acceleration)
-const test = ref(0)
-watch(acceleration, (value) => {
-    console.log(value)
-    test.value = value.x
-})
-</script>

@@ -40,4 +40,9 @@ export default defineNuxtConfig({
     port: 4444,
     // https: true
   },
+  nitro: {
+    experimental: {
+      websocket: true
+    }
+  }
 })
