@@ -3,7 +3,7 @@
   <Suspense v-for="(path, index) in videoPaths" :key="path.path">
     <PlaneUno :videoPath="path.path" :position="[0, 0, index * -19]" :rotation="[0, 0, 0]" :text="path.text" />
   </Suspense>
-  <LightsBasic /> 
+  <TresAmbientLight :intensity="1" />
 </template>
 
 <script setup>
@@ -21,7 +21,7 @@ const videoPaths = [
     text: "Background"
   },
   {
-    path: "/train.mov",
+    path: "/inference.mov",
     text: "Methods"
   },
   {
@@ -61,6 +61,28 @@ onKeyStroke(' ', (e) => {
     ease: "power2.inOut"
   })
 })
+
+onKeyStroke('ArrowLeft', (e) => {
+  e.preventDefault()
+  gsap.to(cameraX, {
+    value: 10,
+    duration: 1,
+    ease: "power2.inOut"
+  })
+  gsap.to(cameraX, {
+    value: 5,
+    duration: 1,
+    delay: 1.5,
+    ease: "power2.inOut"
+  })
+  gsap.to(cameraZ, {
+    value: cameraZ.value + 20,
+    delay: 1.5,
+    duration: 1,
+    ease: "power2.inOut"
+  })
+})
+
 
 
 </script>

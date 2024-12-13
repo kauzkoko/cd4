@@ -1,9 +1,7 @@
 <template>
-  <Controls />
   <TresCanvas v-bind="gl">
     <ScenesPresentation />
   </TresCanvas>
-  <CenterCross />
 </template>
 
 <script setup>

@@ -1,10 +1,14 @@
 <template>
-  <div>
-    <h1>Android</h1>
-    <div>Alpha: {{ alpha.toFixed(2) }} </div>
-    <button @click="setZeroPoint">Set zero point</button>
-    <button @click="snapshot">Take snapshot</button>
-    <button @click="sendAlpha()">Send alpha</button>
+  <div class="flex flex-col items-center justify-center h-screen">
+    <!-- <button @click="onClick">Click</button> -->
+    <p class="text-2xl">Alpha: {{ alpha.toFixed(2) }}</p>
+    <div class="w-full h-80vh flex flex-col children:h-full">
+      <button @click="setZeroPoint">Set zero point</button>
+      <button @click="snapshot">Take snapshot</button>
+      <!-- <button @click="sendAlpha">Send alpha</button> -->
+      <button @click="toggleMode">Toggle mode</button>
+    </div>
+
   </div>
 </template>
 
@@ -12,30 +16,10 @@
 console.log(location.host)
 const { status, data, send, open, close } = useWebSocket('wss://' + location.host + '/_ws')
 
-
 function setZeroPoint() {
   window.removeEventListener('deviceorientation', handleAndroid);
   window.addEventListener('deviceorientation', handleAndroid);
 }
-
-let lastSentTime = 0
-const SEND_INTERVAL = 100 // Send at most every 100ms
-
-function sendAlpha() {
-  const now = Date.now()
-  if (now - lastSentTime > SEND_INTERVAL) {
-    send(JSON.stringify({
-      type: 'alpha',
-      value: alpha.value
-    }))
-    lastSentTime = now
-  }
-}
-
-watch(alpha, () => {
-  sendAlpha()
-})
-
 
 function snapshot() {
   send(JSON.stringify({ type: 'snapshot' }))
@@ -72,6 +56,28 @@ function handleOrientation(event) {
 
 function handleAndroid() {
   console.log(event)
-  alpha.value = event.alpha-90
+  alpha.value = event.alpha
 }
+
+let lastSentTime = 0
+const SEND_INTERVAL = 100 // Send at most every 100ms
+
+function toggleMode() {
+  send(JSON.stringify({ type: 'toggleMode' }))
+}
+
+function sendAlpha() {
+  const now = Date.now()
+  if (now - lastSentTime > SEND_INTERVAL) {
+    send(JSON.stringify({
+      type: 'alpha',
+      value: alpha.value.toFixed(2)
+    }))
+    lastSentTime = now
+  }
+}
+
+watch(alpha, () => {
+  sendAlpha()
+})
 </script>
