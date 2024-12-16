@@ -3,8 +3,9 @@
     <div>{{ orientation }}</div>
     <div>{{ angle }}</div>
 	<div>{{clickedCounter}}</div>
-	<div class="fixed top-50vh left-0 children:w-300px children:h-200px">
+	<div class="fixed top-50vh left-0">
 		<button @click="toggler()">toggler</button>
+		<button @click="toggleFullscreen()">toggle fullscreen</button>
 		<button @click="lock()">lock</button>
 		<button @click="unlock()">unlock</button>
 	</div>
@@ -26,11 +27,13 @@
 import 'animate.css';
 
 const { isSupported, orientation, angle, lockOrientation, unlockOrientation } = useScreenOrientation()
+const { isFullscreen, enter, exit, toggle: toggleFullscreen } = useFullscreen()
 
 const clickedCounter = ref(0)
 const lock = () => {
   clickedCounter.value++
-  lockOrientation(orientation.value)
+  screen.orientation.lock("portrait-primary");
+//   lockOrientation(orientation.value)
 }
 
 watch(orientation, () => {	// screen.orientation.lock("portrait-primary");

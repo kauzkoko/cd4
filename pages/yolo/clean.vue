@@ -39,7 +39,7 @@
 <script setup>
 import { gsap } from 'gsap'
 
-const cameraZ = ref(20)
+const cameraZ = ref(10)
 const cameraX = ref(0)
 
 const gl = {
@@ -154,6 +154,7 @@ watch(da, (newValue) => {
 
   if (type === 'alpha') {
     // console.log('in alpha')
+
     alpha.value = data.value
   }
 
