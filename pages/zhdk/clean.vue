@@ -468,7 +468,7 @@ function flyToStart() {
 function startCircularRotation() {
   // First kill any existing animations
   gsap.killTweensOf(alpha)
-  
+
   const targetX = 0
   const targetZ = 0
   gsap.to(cameraX, {
@@ -482,12 +482,34 @@ function startCircularRotation() {
     ease: 'power2.out',
   })
   gsap.to(alpha, {
-    value: alpha.value + 360,  // Full rotation
+    value: alpha.value + 360, // Full rotation
     duration: 10,
     delay: 1,
-    repeat: -1,  // Infinite repetition
-    ease: "none"
+    repeat: -1, // Infinite repetition
+    ease: 'none',
+    onStart: () => {
+      let intervalIdPlayer, intervalIdFront
+      intervalIdFront = setInterval(() => {
+        console.log('looking to front')
+        const audio = new Audio('/strudel/hh2.mp3')
+        audio.play()
+      }, 10000)
+      setTimeout(() => {
+        intervalIdPlayer = setInterval(() => {
+          console.log('looking at player')
+          const audio = new Audio('/strudel/hh.mp3')
+          audio.play()
+        }, 10000)
+      }, 5000)
+    },
+    onComplete: () => {
+      if (intervalIdFront) {
+        clearInterval(intervalIdFront\)
+      }
+      if (intervalIdPlayer) {
+        clearInterval(intervalIdPlayer)
+      }
+    },
   })
 }
-
 </script>
