@@ -4,9 +4,11 @@
     <TresBoxGeometry />
     <TresMeshNormalMaterial :opacity="0" transparent />
     <Html center prepend transform :distance-factor="1" wrapperClass="test">
-      <html :style="{ width: `${width}px`, height: `${height}px` }" class="flexCenter bg-red">
-        <div class="bg-black text-amber md:bg-blue">stuff</div>
-      </html>
+    <html :style="{ width: `${width}px`, height: `${height}px` }" class="flexCenter bg-red">
+    <div class="bg-black text-amber md:bg-blue">stuff</div>
+
+    </html>
+
     </Html>
   </TresMesh>
   <!-- <GridHelper /> -->
@@ -26,6 +28,7 @@ onMounted(() => {
   watch([width, height], () => {
     console.log('changed')
     opacity.value = 0
+  })
 })
 </script>
 
