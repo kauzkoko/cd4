@@ -5,16 +5,31 @@
       <TresSphereGeometry :args="[boule.size, 16, 16]" />
       <TresMeshStandardMaterial :color="boule.color" />
       <Suspense>
-        <PositionalAudio
-          ref="positionalAudioRef"
-          :ready="true"
-          loop
-          helper
-          :autoplay="false"
-          :key="trigger"
-          :url="boule.player === 0 ? sounds.noise.low : boule.player === 1 ? sounds.noise.high : sounds.noise.medium"
-        />
+        <PositionalAudio ref="positionalAudioRef" :ready="true" loop helper :autoplay="false" :key="trigger"
+          :url="boule.player === 0 ? sounds.noise.low : boule.player === 1 ? sounds.noise.high : sounds.noise.medium" />
       </Suspense>
+    </TresMesh>
+    <TresMesh :position="[0, 1, 20]">
+      <TresBoxGeometry :args="[1, 2, 1]" />
+      <TresMeshStandardMaterial color="gray" transparent />
+      <Html center transform>
+      <div class="mt--120px flex flex-col items-center">
+        <div class="mirror">Start</div>
+        <div class="w-2px h-50px bg-black"></div>
+      </div>
+
+      </Html>
+    </TresMesh>/
+    <TresMesh :position="[0, 1, -20]" v-if="trigger > 0">
+      <TresBoxGeometry :args="[1, 1, 1]" />
+      <TresMeshStandardMaterial color="gray" transparent :opacity="0" />
+      <Html center transform>
+      <div class="mt--120px flex flex-col items-center">
+        <div>Front</div>
+        <div class="w-2px h-100px bg-gray"></div>
+      </div>
+
+      </Html>
     </TresMesh>
     <TresAmbientLight :intensity="3" />
     <TresDirectionalLight :position="[2, 2, 2]" :intensity="1" />
@@ -33,8 +48,13 @@
       <button @click="goToNext()">goToNextShot</button>
       <button @click="goToPrevious()">goToPreviousShot</button>
       <button @click="goTo('start')">goToStart</button>
-      <button @click="trigger++">reloadSounds</button>
       <div class="text-left">Current step: after {{ stepNames[index] }}</div>
+    </div>
+    <div class="flex flex-col mr-1 children:text-20px children:mt-1">
+      <div>Debug</div>
+      <button @click="trigger++">reloadSounds</button>
+      <button @click="killTweens()">killTweens</button>
+      <button @click="clearIntervals()">clearIntervals</button>
     </div>
   </div>
   <div v-if="trigger < 1" class="w-screen h-screen bg-white fixed top-0 left-0 flexCenter">
@@ -43,6 +63,7 @@
 </template>
 
 <script setup>
+import { Html } from '@tresjs/cientos'
 import { gsap } from 'gsap'
 const gl = {
   clearColor: 'white',
@@ -400,7 +421,14 @@ sounds.colors = {
 const alpha = ref(0)
 const cameraZ = ref(20)
 const cameraX = ref(0)
+
+function killTweens() {
+  gsap.killTweensOf([alpha, cameraX, cameraZ])
+  clearIntervals()
+}
+
 function flyToCochonetteAndBack() {
+  killTweens()
   const angleInRadians = (alpha.value * Math.PI) / 180
   const targetX = cameraX.value - 20 * Math.sin(angleInRadians)
   const targetZ = cameraZ.value - 20 * Math.cos(angleInRadians)
@@ -435,6 +463,7 @@ function flyToCochonetteAndBack() {
 }
 
 function flyThroughCochonetteToTheEndless() {
+  killTweens()
   const angleInRadians = (alpha.value * Math.PI) / 180
   const targetX = cameraX.value - 100 * Math.sin(angleInRadians)
   const targetZ = cameraZ.value - 100 * Math.cos(angleInRadians)
@@ -452,7 +481,7 @@ function flyThroughCochonetteToTheEndless() {
 }
 
 function flyToStart() {
-  gsap.killTweensOf([cameraX, cameraZ])
+  killTweens()
   gsap.to(cameraX, {
     value: 0,
     duration: 2,
@@ -463,12 +492,26 @@ function flyToStart() {
     duration: 2,
     ease: 'power2.out',
   })
+  gsap.to(alpha, {
+    value: 0,
+    duration: 2,
+    ease: 'power2.out',
+  })
+}
+
+let intervalIdPlayer, intervalIdFront
+
+function clearIntervals() {
+  if (intervalIdFront) {
+    clearInterval(intervalIdFront)
+  }
+  if (intervalIdPlayer) {
+    clearInterval(intervalIdPlayer)
+  }
 }
 
 function startCircularRotation() {
-  // First kill any existing animations
-  gsap.killTweensOf(alpha)
-
+  killTweens()
   const targetX = 0
   const targetZ = 0
   gsap.to(cameraX, {
@@ -488,7 +531,7 @@ function startCircularRotation() {
     repeat: -1, // Infinite repetition
     ease: 'none',
     onStart: () => {
-      let intervalIdPlayer, intervalIdFront
+      console.log('startCircularRotation')
       intervalIdFront = setInterval(() => {
         console.log('looking to front')
         const audio = new Audio('/strudel/hh2.mp3')
@@ -503,13 +546,55 @@ function startCircularRotation() {
       }, 5000)
     },
     onComplete: () => {
-      if (intervalIdFront) {
-        clearInterval(intervalIdFront\)
-      }
-      if (intervalIdPlayer) {
-        clearInterval(intervalIdPlayer)
-      }
+      clearIntervals()
     },
   })
 }
+
+setTimeout(() => {
+  gsap.to(cameraZ, {
+    value: 20.001,
+    duration: 1,
+    ease: 'power1.out',
+  })
+}, 200)
+
+const { status, data, send, open, close } = useWebSocket('wss://' + location.host + '/_ws')
+watch(data, (newValue) => {
+  console.log('WebSocket data received:', newValue)
+  let data
+  try {
+    data = typeof newValue === 'string' ? JSON.parse(newValue) : newValue
+  } catch (error) {
+    console.error('Failed to parse WebSocket data:', error)
+    return
+  }
+
+  const type = data?.type ?? 'none'
+  if (type === 'flyToStart') {
+    console.log('flyToStart')
+    flyToStart()
+  }
+
+  if (type === 'flyToCochonetteAndBack') {
+    console.log('flyToCochonetteAndBack')
+    flyToCochonetteAndBack()
+  }
+
+  if (type === 'flyThroughCochonetteToTheEndless') {
+    console.log('flyThroughCochonetteToTheEndless') 
+    flyThroughCochonetteToTheEndless()
+  }
+
+  if (type === 'startCircularRotation') {
+    console.log('startCircularRotation')
+    startCircularRotation()
+  }
+})
 </script>
+
+<style>
+.mirror {
+  transform: scaleX(-1)
+}
+</style>
