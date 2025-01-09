@@ -1,0 +1,493 @@
+<template>
+  <TresCanvas v-bind="gl">
+    <TresPerspectiveCamera :position="[cameraX, 1, cameraZ]" :rotation="[0, (alpha * Math.PI) / 180, 0]" />
+    <TresMesh v-for="(boule, index) in current.boules" :key="index" :position="[boule.x, 0, boule.y]">
+      <TresSphereGeometry :args="[boule.size, 16, 16]" />
+      <TresMeshStandardMaterial :color="boule.color" />
+      <Suspense>
+        <PositionalAudio
+          ref="positionalAudioRef"
+          :ready="true"
+          loop
+          helper
+          :autoplay="false"
+          :key="trigger"
+          :url="boule.player === 0 ? sounds.noise.low : boule.player === 1 ? sounds.noise.high : sounds.noise.medium"
+        />
+      </Suspense>
+    </TresMesh>
+    <TresAmbientLight :intensity="3" />
+    <TresDirectionalLight :position="[2, 2, 2]" :intensity="1" />
+    <TresGridHelper :args="[100, 100]" />
+  </TresCanvas>
+  <div class="fixed top-0 right-0 flex flex-row mr-1 children:text-20px children:mt-1">
+    <div class="flex flex-col mr-1 children:text-20px children:mt-1">
+      <div>Animations</div>
+      <button @click="flyToCochonetteAndBack()">flyToCochonetteAndBack</button>
+      <button @click="flyToStart()">flyToStart</button>
+      <button @click="flyThroughCochonetteToTheEndless()">flyThroughCochonetteToTheEndless</button>
+      <button @click="startCircularRotation()">startCircularRotation</button>
+    </div>
+    <div class="flex flex-col mr-1 children:text-20px children:mt-1">
+      <div>Controls</div>
+      <button @click="goToNext()">goToNextShot</button>
+      <button @click="goToPrevious()">goToPreviousShot</button>
+      <button @click="goTo('start')">goToStart</button>
+      <button @click="trigger++">reloadSounds</button>
+      <div class="text-left">Current step: after {{ stepNames[index] }}</div>
+    </div>
+  </div>
+  <div v-if="trigger < 1" class="w-screen h-screen bg-white fixed top-0 left-0 flexCenter">
+    <div @click="trigger++" class="text-black text-80px">START</div>
+  </div>
+</template>
+
+<script setup>
+import { gsap } from 'gsap'
+const gl = {
+  clearColor: 'white',
+  shadows: true,
+  alpha: true,
+  windowSize: true,
+}
+
+const trigger = ref(0)
+
+const {
+  steps,
+  stepNames,
+  index,
+  current,
+  next,
+  previous,
+  isFirst,
+  isLast,
+  goTo,
+  goToNext,
+  goToPrevious,
+  goBackTo,
+  isNext,
+  isPrevious,
+  isCurrent,
+  isBefore,
+  isAfter,
+} = useStepper({
+  start: {
+    boules: [
+      {
+        type: 'cochonette',
+        player: 0,
+        x: 0,
+        y: 0,
+        color: 'white',
+        size: 0.3,
+      },
+    ],
+  },
+  firstShot: {
+    boules: [
+      {
+        type: 'cochonette',
+        player: 0,
+        x: 0,
+        y: 0,
+        color: 'white',
+        size: 0.3,
+      },
+      {
+        type: 'boule',
+        player: 1,
+        x: 2,
+        y: 3,
+        color: 'blue',
+        size: 0.7,
+      },
+    ],
+  },
+  secondShot: {
+    boules: [
+      {
+        type: 'cochonette',
+        player: 0,
+        x: 0,
+        y: 0,
+        color: 'white',
+        size: 0.3,
+      },
+      {
+        type: 'boule',
+        player: 1,
+        x: 2,
+        y: 3,
+        color: 'blue',
+        size: 0.7,
+      },
+      {
+        type: 'boule',
+        player: 2,
+        x: 7,
+        y: -1,
+        color: 'red',
+        size: 0.7,
+      },
+    ],
+  },
+  thirdShot: {
+    boules: [
+      {
+        type: 'cochonette',
+        player: 0,
+        x: 0,
+        y: 0,
+        color: 'white',
+        size: 0.3,
+      },
+      {
+        type: 'boule',
+        player: 1,
+        x: 2,
+        y: 3,
+        color: 'blue',
+        size: 0.7,
+      },
+      {
+        type: 'boule',
+        player: 2,
+        x: 7,
+        y: -1,
+        color: 'red',
+        size: 0.7,
+      },
+      {
+        type: 'boule',
+        player: 1,
+        x: 5,
+        y: 1,
+        color: 'blue',
+        size: 0.7,
+      },
+    ],
+  },
+  fourthShot: {
+    boules: [
+      {
+        type: 'cochonette',
+        player: 0,
+        x: 0,
+        y: 0,
+        color: 'white',
+        size: 0.3,
+      },
+      {
+        type: 'boule',
+        player: 1,
+        x: 2,
+        y: 3,
+        color: 'blue',
+        size: 0.7,
+      },
+      {
+        type: 'boule',
+        player: 2,
+        x: 7,
+        y: -1,
+        color: 'red',
+        size: 0.7,
+      },
+      {
+        type: 'boule',
+        player: 1,
+        x: 5,
+        y: 1,
+        color: 'blue',
+        size: 0.7,
+      },
+      {
+        type: 'boule',
+        player: 1,
+        x: -5,
+        y: -2,
+        color: 'blue',
+        size: 0.7,
+      },
+    ],
+  },
+  fifthShot: {
+    boules: [
+      {
+        type: 'cochonette',
+        player: 0,
+        x: 0,
+        y: 0,
+        color: 'white',
+        size: 0.3,
+      },
+      {
+        type: 'boule',
+        player: 1,
+        x: 2,
+        y: 3,
+        color: 'blue',
+        size: 0.7,
+      },
+      {
+        type: 'boule',
+        player: 2,
+        x: 7,
+        y: -1,
+        color: 'red',
+        size: 0.7,
+      },
+      {
+        type: 'boule',
+        player: 1,
+        x: 5,
+        y: 1,
+        color: 'blue',
+        size: 0.7,
+      },
+      {
+        type: 'boule',
+        player: 1,
+        x: -5,
+        y: -2,
+        color: 'blue',
+        size: 0.7,
+      },
+      {
+        type: 'boule',
+        player: 2,
+        x: -5,
+        y: -5,
+        color: 'red',
+        size: 0.7,
+      },
+    ],
+  },
+  sixthShot: {
+    boules: [
+      {
+        type: 'cochonette',
+        player: 0,
+        x: 0,
+        y: 0,
+        color: 'white',
+        size: 0.3,
+      },
+      {
+        type: 'boule',
+        player: 1,
+        x: 2,
+        y: 3,
+        color: 'blue',
+        size: 0.7,
+      },
+      {
+        type: 'boule',
+        player: 2,
+        x: 7,
+        y: -1,
+        color: 'red',
+        size: 0.7,
+      },
+      {
+        type: 'boule',
+        player: 1,
+        x: 5,
+        y: 1,
+        color: 'blue',
+        size: 0.7,
+      },
+      {
+        type: 'boule',
+        player: 1,
+        x: -5,
+        y: -2,
+        color: 'blue',
+        size: 0.7,
+      },
+      {
+        type: 'boule',
+        player: 2,
+        x: -5,
+        y: -5,
+        color: 'red',
+        size: 0.7,
+      },
+      {
+        type: 'boule',
+        player: 2,
+        x: 3,
+        y: -3,
+        color: 'red',
+        size: 0.7,
+      },
+    ],
+  },
+})
+const boules = [
+  {
+    type: 'boule',
+    player: 1,
+    x: 2,
+    y: 3,
+    color: 'blue',
+    size: 0.7,
+  },
+  {
+    type: 'boule',
+    player: 1,
+    x: 5,
+    y: 1,
+    color: 'blue',
+    size: 0.7,
+  },
+  {
+    type: 'boule',
+    player: 1,
+    x: -5,
+    y: -2,
+    color: 'blue',
+    size: 0.7,
+  },
+  {
+    type: 'boule',
+    player: 2,
+    x: 7,
+    y: -1,
+    color: 'red',
+    size: 0.7,
+  },
+  {
+    type: 'boule',
+    player: 2,
+    x: 10,
+    y: 10,
+    color: 'red',
+    size: 0.7,
+  },
+  {
+    type: 'boule',
+    player: 2,
+    x: -5,
+    y: -5,
+    color: 'red',
+    size: 0.7,
+  },
+  {
+    type: 'cochonette',
+    player: 0,
+    x: 0,
+    y: 0,
+    color: 'white',
+    size: 0.3,
+  },
+]
+
+let sounds = {}
+sounds.noise = {
+  low: '/noiselow.mp3',
+  medium: '/noise.mp3',
+  high: '/noisehigh.mp3',
+}
+
+sounds.colors = {
+  color: '/color.mp3',
+  white: '/white.mp3',
+  blue: '/blue.mp3',
+}
+
+const alpha = ref(0)
+const cameraZ = ref(20)
+const cameraX = ref(0)
+function flyToCochonetteAndBack() {
+  const angleInRadians = (alpha.value * Math.PI) / 180
+  const targetX = cameraX.value - 20 * Math.sin(angleInRadians)
+  const targetZ = cameraZ.value - 20 * Math.cos(angleInRadians)
+
+  gsap.to(cameraX, {
+    value: targetX,
+    duration: 3,
+    ease: 'power2.out',
+  })
+  gsap.to(cameraZ, {
+    value: targetZ,
+    duration: 3,
+    ease: 'power2.out',
+  })
+
+  // Return to original position
+  gsap.to(cameraX, {
+    value: 0,
+    duration: 3,
+    delay: 4,
+    ease: 'power2.out',
+  })
+  gsap.to(cameraZ, {
+    value: 20,
+    duration: 3,
+    delay: 4,
+    ease: 'power2.out',
+    onComplete: () => {
+      console.log('animation complete')
+    },
+  })
+}
+
+function flyThroughCochonetteToTheEndless() {
+  const angleInRadians = (alpha.value * Math.PI) / 180
+  const targetX = cameraX.value - 100 * Math.sin(angleInRadians)
+  const targetZ = cameraZ.value - 100 * Math.cos(angleInRadians)
+
+  gsap.to(cameraX, {
+    value: targetX,
+    duration: 5,
+    ease: 'none',
+  })
+  gsap.to(cameraZ, {
+    value: targetZ,
+    duration: 5,
+    ease: 'none',
+  })
+}
+
+function flyToStart() {
+  gsap.killTweensOf([cameraX, cameraZ])
+  gsap.to(cameraX, {
+    value: 0,
+    duration: 2,
+    ease: 'power2.out',
+  })
+  gsap.to(cameraZ, {
+    value: 20,
+    duration: 2,
+    ease: 'power2.out',
+  })
+}
+
+function startCircularRotation() {
+  // First kill any existing animations
+  gsap.killTweensOf(alpha)
+  
+  const targetX = 0
+  const targetZ = 0
+  gsap.to(cameraX, {
+    value: targetX,
+    duration: 1,
+    ease: 'power2.out',
+  })
+  gsap.to(cameraZ, {
+    value: targetZ,
+    duration: 1,
+    ease: 'power2.out',
+  })
+  gsap.to(alpha, {
+    value: alpha.value + 360,  // Full rotation
+    duration: 10,
+    delay: 1,
+    repeat: -1,  // Infinite repetition
+    ease: "none"
+  })
+}
+
+</script>
